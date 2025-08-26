@@ -12,12 +12,14 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4   # updated
+      uses: actions/checkout@v4
 
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y ldid fakeroot make wget git perl clang
+        sudo apt install -y fakeroot make wget git perl clang dpkg dpkg-dev
+        git clone https://github.com/ProcursusTeam/ldid.git
+        cd ldid && sudo make install && cd ..
 
     - name: Setup Theos
       run: |
@@ -30,7 +32,7 @@ jobs:
         make package FINALPACKAGE=1
 
     - name: Upload .deb artifact
-      uses: actions/upload-artifact@v4   # ✅ new version
+      uses: actions/upload-artifact@v4
       with:
         name: tweak-deb
         path: ./packages/*.deb
