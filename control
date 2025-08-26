@@ -1,0 +1,9 @@
+Package: com.yourname.idchanger
+Name: ID Changer
+Depends: mobilesubstrate
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: Randomizes device IDs every app launch
+Maintainer: You <you@email.com>
+Author: You
+Section: Tweaks
