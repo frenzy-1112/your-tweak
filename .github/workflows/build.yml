@@ -1,10 +1,10 @@
 name: Build Tweak
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   build:
@@ -17,23 +17,26 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y fakeroot make wget git perl clang dpkg dpkg-dev libplist-dev
-        git clone https://github.com/ProcursusTeam/ldid.git
-        cd ldid && sudo make install && cd ..
+        sudo apt install -y git fakeroot make perl clang dpkg dpkg-dev libssl-dev libplist-dev libplist++-dev lzma-dev
 
-
-    - name: Setup Theos
+    - name: Install Theos
       run: |
         git clone --recursive https://github.com/theos/theos.git $HOME/theos
         echo "THEOS=$HOME/theos" >> $GITHUB_ENV
 
+    - name: Install ldid (prebuilt)
+      run: |
+        wget https://apt.procurs.us/pool/main/l/ldid/ldid_2.1.5-procursus7_amd64.deb
+        sudo dpkg -i ldid_2.1.5-procursus7_amd64.deb
+
     - name: Build tweak
       run: |
-        export THEOS=$HOME/theos
-        make package FINALPACKAGE=1
+        make clean package FINALPACKAGE=1
+      env:
+        THEOS: ${{ env.THEOS }}
 
-    - name: Upload .deb artifact
+    - name: Upload .deb package
       uses: actions/upload-artifact@v4
       with:
-        name: tweak-deb
+        name: tweak-package
         path: ./packages/*.deb
