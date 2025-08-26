@@ -17,9 +17,10 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y fakeroot make wget git perl clang dpkg dpkg-dev
+        sudo apt install -y fakeroot make wget git perl clang dpkg dpkg-dev libplist-dev
         git clone https://github.com/ProcursusTeam/ldid.git
         cd ldid && sudo make install && cd ..
+
 
     - name: Setup Theos
       run: |
