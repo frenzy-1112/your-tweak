@@ -1,0 +1,36 @@
+name: Build Tweak
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y ldid fakeroot make wget git perl clang
+
+    - name: Setup Theos
+      run: |
+        git clone --recursive https://github.com/theos/theos.git $HOME/theos
+        echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+
+    - name: Build tweak
+      run: |
+        export THEOS=$HOME/theos
+        make package FINALPACKAGE=1
+
+    - name: Upload .deb artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: tweak-deb
+        path: ./packages/*.deb
